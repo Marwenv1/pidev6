@@ -1,0 +1,143 @@
+{% extends 'base_front.html.twig' %}
+
+{% block title %}Publications index{% endblock %}
+
+{% block content %}
+
+    <div class="text-center wow fadeInUp" data-wow-delay="0.1s" style="visibility: visible; animation-delay: 0.1s; animation-name: fadeInUp;">
+        <h6 class="section-title bg-white text-center text-primary px-3">Forum</h6>
+        <h1 class="mb-5"></h1>
+    </div>
+    <div class="container">
+        <div class="main-body p-0">
+            <div class="inner-wrapper">
+                <div class="inner-main">
+                    <!-- Forum Detail -->
+                    <div class="inner-main-body p-2 p-sm-3 forum-content">
+                        <a href="{{ path('app_publication_index') }}" class="btn btn-light btn-sm mb-3 has-icon"  ><i class="fa fa-arrow-left mr-2"></i>Back</a>
+                        <div class="card mb-2">
+                            <div class="card-body">
+                                <div class="media forum-item">
+                                    <a href="javascript:void(0)" class="card-link">
+                                        <img src="" class="rounded-circle" width="50" alt="User" />
+                                        <small class="d-block text-center text-muted"></small>
+                                    </a>
+                                    <div class="media-body ml-3">
+                                        <a href="javascript:void(0)" class="text-secondary">USER</a>
+                                        <small class="text-muted ml-2">{{ publication.date|date("F jS \\a\\t g:ia") }}</small>
+                                        <h5 class="mt-1">{{ publication.nom }}</h5>
+                                        <div class="mt-3 font-size-sm">
+
+                                            <p>
+                                                {{ publication.description }}
+                                            </p>
+                                            <hr style="margin-top: 1rem;margin-bottom: 1rem;border: 0;border-top: 1px solid rgba(0, 0, 0, 0.1);"/>
+                                            <img style="height: 250px;width: 250px" src="{{ asset('uploads/'~publication.image) }}">
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        {% for commentaire in commentaires %}
+                            <div class="card mb-2">
+                                <div class="card-body">
+                                    <div class="media forum-item">
+                                        <a href="javascript:void(0)" class="card-link">
+                                            <img src="" class="rounded-circle" width="50" alt="User" />
+                                            <small class="d-block text-center text-muted"></small>
+                                        </a>
+                                        <div class="media-body ml-3">
+                                            <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
+                                            <div class="rating" >
+                                                <!-- Thumbs up -->
+                                                <div class="like grow">
+                                                    <i class="fa fa-thumbs-up fa-3x like" aria-hidden="true"></i>
+                                                </div>
+                                                <!-- Thumbs down -->
+                                                <div class="dislike grow" >
+                                                    <i class="fa fa-thumbs-down fa-3x like" aria-hidden="true"></i>
+                                                </div>
+                                            </div>
+                                            <a href="javascript:void(0)" class="text-secondary"></a>
+                                            <small class="text-muted ml-2">{{ commentaire.DateCommentaire|date("F jS \\a\\t g:ia") }}</small>
+                                            <div class="mt-3 font-size-sm">
+                                                <p>{{ commentaire.TextCommentaire }}</p>
+                                                <hr style="margin-top: 1rem;margin-bottom: 1rem;border: 0;border-top: 1px solid rgba(0, 0, 0, 0.1);"/>
+
+                                                <img style="height: 250px;width: 250px" src="{{ asset('uploads/'~commentaire.imageCommentaire) }}">
+                                            </div>
+                                            <br>
+
+                                        </div>
+                                        <a class="btn btn-danger" href="{{ path('app_commentaire_delete', {'id': commentaire.id}) }}">Delete</a>
+
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        <div class="card mb-2">
+                            <div class="card-body">
+                                <form method="post" action="{{ path('app_commentaire_new', {'id': publication.id}) }}" enctype="multipart/form-data">
+                                    <h4> Post Responses</h4>
+                                    <br>
+                                    <div class="media forum-item">
+                                        <div class="col-12">
+                                            <div class="form-floating">
+                                                <textarea class="form-control" placeholder="Ecrivez votre contenu ici..." id="contenu" name="TextCommentaire" style="height: 150px"></textarea>
+                                                <label for="message">Contenu</label>
+                                            </div>
+                                            <br>
+                                            <div class="form-floating">
+                                                <input type="file" class="form-control" name="imageCommentaire">
+                                            </div>
+                                            <br>
+                                            <button class="btn btn-primary w-100 py-3" type="submit">Post Comment</button>
+                                        </div>
+                                        <div class="col-12">
+
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /Forum Detail -->
+
+    <script>
+
+        const LIKE_ICON = 'far fa-thumbs-up';
+        const UNLIKE_ICON = 'fas fa-thumbs-up';
+
+        Array.from(document.querySelectorAll('a.js-like')).forEach(function (link) {
+            link.addEventListener('click', onClickLink);
+        });
+
+        async function onClickLink(event) {
+            event.preventDefault();
+            const url = this.href;
+            const icone = this.querySelector('i');
+            const count = this.querySelector('span.js-likes');
+
+            try {
+                const result = await axios.post(url);
+                const data = result.data;
+                icone.className = icone.className === LIKE_ICON ? UNLIKE_ICON : LIKE_ICON;
+                count.textContent = data.likes;
+            } catch (error) {
+                console.log(error)
+            }
+        }
+    </script>
+    <script>
+        $('.like, .dislike').on('click', function() {
+            event.preventDefault();
+            $('.active').removeClass('active');
+            $(this).addClass('active');
+        });
+    </script>
+{% endblock %}
