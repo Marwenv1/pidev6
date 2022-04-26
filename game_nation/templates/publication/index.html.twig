@@ -57,10 +57,10 @@
                                             <a href="#" data-toggle="collapse" data-target=".forum-content"><img src="" class="mr-3 rounded-circle" width="50" alt="User" /></a>
                                             <div class="media-body">
                                                 <h6><a href="{{ path('questshow', {'id': publication.id}) }}"  data-target=".forum-content" class="text-body">{{ publication.nom }}</a></h6>
-                                                <p class="text-secondary">
+                                                <a class="text-secondary">
                                                     {{ publication.description }}
-                                                </p>
-                                                <p class="text-muted"> posted At <span class="text-secondary font-weight-bold">{{ publication.date|date("F jS \\a\\t g:ia") }}</span></p>
+                                                </a><br>
+                                                <a class="text-muted"> posted At <span class="text-secondary font-weight-bold">{{ publication.date|date("F jS \\a\\t g:ia") }}</span></a>
                                             </div>
                                             <div class="text-muted small text-center align-self-center">
                                                 <span class="d-none d-sm-inline-block"><i class="far fa-eye"></i> 19</span>
@@ -100,18 +100,34 @@
         </div>
     </div>
     <script>
-        function comments(){
-            var sch=$("#commentInput").val();
-            $.ajax({
-                url: "{{ path('commSearch') }}",
-                data:{dat: sch},
-                type: "POST",
-                success: function(data){
-                    $('#commentsList').html(data).show();
-                }
+        $(document).ready(function(){
+            $('#commentInput').keyup(function(){
+                search_table($(this).val());
             });
-        }
+            function search_table(value){
+                $('#commentsList a').each(function(){
+                    var found = 'false';
+                    $(this).each(function(){
+                        if($(this).text().toLowerCase().indexOf(value.toLowerCase()) >= 0)
+                        {
+                            found = 'true';
+                        }
+                    });
+                    if(found === 'true')
+                    {
+                        $(this).show();
+
+                    }
+                    else
+                    {
+                        $(this).hide();
+
+                    }
+                });
+            }
+        });
     </script>
+
 
 {% endblock %}
 

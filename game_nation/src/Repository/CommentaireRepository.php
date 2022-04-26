@@ -4,6 +4,8 @@ namespace App\Repository;
 
 use App\Entity\Commentaire;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
@@ -43,6 +45,18 @@ class CommentaireRepository extends ServiceEntityRepository
         if ($flush) {
             $this->_em->flush();
         }
+    }
+    public function calcul()
+    {
+        $qb = $this->createQueryBuilder('t');
+        try {
+            return $qb
+                ->select('count(t.id)')
+                ->getQuery()
+                ->getSingleScalarResult();
+        } catch (NoResultException | NonUniqueResultException $e) {
+        }
+
     }
 
 }

@@ -13,6 +13,8 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use CMEN\GoogleChartsBundle\GoogleCharts\Charts\PieChart;
+
 
 /**
  * @Route("/commentaire")
@@ -22,11 +24,34 @@ class CommentaireController extends AbstractController
     /**
      * @Route("/", name="app_commentaire_index", methods={"GET"})
      */
-    public function index(CommentaireRepository $commentaireRepository): Response
+    public function index(CommentaireRepository $commentaireRepository ,PublicationRepository $publicationRepository): Response
     {
+        $commentaires = $this->getDoctrine()
+            ->getRepository(Commentaire::class)
+            ->findAll();
+        $list1 = $commentaireRepository->calcul();
+        $list2 = $publicationRepository->calcul();
+        $pieChart = new PieChart();
+        $pieChart->getData()->setArrayToDataTable(
+            [['Task', 'Hours per Day'],
+                ['Commentaires',     $list1],
+                ['Publication',    $list2],
+
+            ]
+        );
+        $pieChart->getOptions()->setTitle('Users activities');
+        $pieChart->getOptions()->setHeight(500);
+        $pieChart->getOptions()->setWidth(900);
+        $pieChart->getOptions()->getTitleTextStyle()->setBold(true);
+        $pieChart->getOptions()->getTitleTextStyle()->setColor('#009900');
+        $pieChart->getOptions()->getTitleTextStyle()->setItalic(true);
+        $pieChart->getOptions()->getTitleTextStyle()->setFontName('Arial');
+        $pieChart->getOptions()->getTitleTextStyle()->setFontSize(20);
         return $this->render('commentaire/index.html.twig', [
-            'commentaires' => $commentaireRepository->findAll(),
+            'commentaire' => $commentaires,
+            'piechart' => $pieChart,
         ]);
+
     }
 
     /**
@@ -86,7 +111,7 @@ class CommentaireController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $commentaireRepository->add($commentaire);
-            return $this->redirectToRoute('app_commentaire_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_publication_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('commentaire/edit.html.twig', [

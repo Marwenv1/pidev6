@@ -71,6 +71,7 @@
 
                                         </div>
                                         <a class="btn btn-danger" href="{{ path('app_commentaire_delete', {'id': commentaire.id}) }}">Delete</a>
+                                        <a class="btn btn-danger" href="{{ path('app_commentaire_edit', {'id': commentaire.id}) }}">edit</a>
 
                                     </div>
                                 </div>
@@ -84,12 +85,12 @@
                                     <div class="media forum-item">
                                         <div class="col-12">
                                             <div class="form-floating">
-                                                <textarea class="form-control" placeholder="Ecrivez votre contenu ici..." id="contenu" name="TextCommentaire" style="height: 150px"></textarea>
+                                                <textarea  class="form-control" placeholder="Ecrivez votre contenu ici..." id="contenu" name="TextCommentaire" style="height: 150px; color: #0b0e10"></textarea>
                                                 <label for="message">Contenu</label>
                                             </div>
                                             <br>
                                             <div class="form-floating">
-                                                <input type="file" class="form-control" name="imageCommentaire">
+                                                <input type="file" class="form-control" name="imageCommentaire" style="color: #0b0e10">
                                             </div>
                                             <br>
                                             <button class="btn btn-primary w-100 py-3" type="submit">Post Comment</button>

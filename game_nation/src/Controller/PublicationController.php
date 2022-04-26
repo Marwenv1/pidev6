@@ -75,8 +75,8 @@ class PublicationController extends AbstractController
     public function commentsearch(Request $request, PublicationRepository $questionsRepository)
     {
         $questions = $request->get('data');
-        //$quest = $questionsRepository->findQuestionsDQL($questions);
-        //var_dump($quest);
+        $quest = $questionsRepository->findQuestionDQL($questions);
+        var_dump($quest);
 
     }
 
